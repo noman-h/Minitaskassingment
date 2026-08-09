@@ -42,8 +42,7 @@ function Login() {
     setErrors({});
 
     try {
-      const result = await axios.post(
-        `${import.meta.env.VITE_API_URL}/task/login`,
+      const result = await axios.post(`${import.meta.env.VITE_API_URL}/task/login`,
         {
           email: loginData.email,
           password: loginData.password,

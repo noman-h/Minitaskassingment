@@ -1,0 +1,16 @@
+body {
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  background: #070d1a;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app-shell {
+  background: #070d1a;
+}
+
+.dashboard-surface {
+  background: linear-gradient(180deg, #101b2e 0%, #07101a 100%);
+}

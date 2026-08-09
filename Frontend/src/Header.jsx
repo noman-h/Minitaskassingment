@@ -25,7 +25,6 @@ function Header() {
     <header className="bg-slate-950 dark:text-slate-100 sticky top-3 z-50 mx-auto w-[95%] max-w-7xl">
       <div className="flex items-center justify-between rounded-2xl border border-slate-200/80 bg-white/75 px-5 py-2.5 shadow-lg shadow-slate-900/5 backdrop-blur-md transition-all duration-200 dark:border-slate-800/80 dark:bg-slate-900/75 dark:shadow-none">
         
-        {/* Brand / Logo + Navigation */}
         <div className="flex items-center gap-6">
           <Link to="/" className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-600 text-white font-black text-sm shadow-md shadow-teal-500/20">
