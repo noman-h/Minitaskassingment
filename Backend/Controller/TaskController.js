@@ -1,6 +1,5 @@
 const tasks=require('../Models/TaskModel')
 const axios = require("axios");
-const { log } = require('console');
 const csv = require("csv-parser");
 const { loadEnvFile } = require('process');
 const { Readable } = require("stream");
@@ -13,6 +12,11 @@ exports.addtask = async (req, res) => {
     
     if (!(title && description && duedate && userid)) {
       return res.status(400).json({ message: "all keys are required" });
+    }
+
+    const existing=await tasks.findOne({title})
+    if(existing){
+      return res.status(409).json({message:"task already exist"})
     }
 
     const data=req.body
@@ -29,7 +33,7 @@ exports.googlesheetadd = async (req, res) => {
   try {
     const { url, userid } = req.body;
 
-    // Validation
+   
     if (!url) {
       return res.status(400).json({
         message: "Google Sheet URL is required",
@@ -39,10 +43,10 @@ exports.googlesheetadd = async (req, res) => {
     let csvUrl = "";
     let importId = "";
 
-    // 1. Check if it's a "Publish to web" link (/spreadsheets/d/e/2PACX-...)
+  //check link public
     const pubMatch = url.match(/\/spreadsheets\/d\/e\/([a-zA-Z0-9-_]+)/);
     
-    // 2. Check if it's a standard sheet link (/spreadsheets/d/1BxiMVs...)
+    //Check  standard sheet link
     const stdMatch = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
 
     if (pubMatch) {
@@ -57,7 +61,7 @@ exports.googlesheetadd = async (req, res) => {
       });
     }
 
-    // Prevent duplicate imports
+    //duplicate imports manage
     const alreadyImported = await tasks.findOne({
       importid: importId,
     });
@@ -68,7 +72,7 @@ exports.googlesheetadd = async (req, res) => {
       });
     }
 
-    // Fetch Google Sheet CSV data
+    // Fetch CSV data
     const response = await axios.get(csvUrl);
 
     const rows = [];
@@ -152,7 +156,7 @@ exports.gettask = async (req, res) => {
       return res.status(400).json({ message: "bad request" });
     }
 
-    // 1. Extract query parameters with default fallbacks
+
     const {
       page = 1,
       limit = 6,
@@ -161,20 +165,18 @@ exports.gettask = async (req, res) => {
       sortBy
     } = req.query;
 
-    // Convert page & limit to numbers
+
     const pageNum = Math.max(1, parseInt(page, 10) || 1);
     const limitNum = Math.max(1, parseInt(limit, 10) || 6);
     const skip = (pageNum - 1) * limitNum;
 
-    // 2. Construct dynamic Mongo query
     const query = { userid };
 
-    // Status Filter
+  
     if (status && status !== "All") {
         query.status = status.toLowerCase();
     }
 
-    // Search Query (Case-insensitive search on title or description)
     if (search && search.trim() !== "") {
       query.$or = [
         { title: { $regex: search.trim(), $options: "i" } },
@@ -182,7 +184,7 @@ exports.gettask = async (req, res) => {
       ];
     }
 
-    // 3. Define Sorting Options
+  
     let sortOptions = {};
     switch (sortBy) {
       case "dueDateDesc":
@@ -206,7 +208,7 @@ exports.gettask = async (req, res) => {
         break;
     }
 
-    // 4. Fetch Total Count & Paginated Results
+  
     const totalTasks = await tasks.countDocuments(query);
     const result = await tasks
       .find(query)
@@ -215,7 +217,7 @@ exports.gettask = async (req, res) => {
       .skip(skip)
       .limit(limitNum);
 
-    // 5. Send paginated response structure
+  
     return res.status(200).json({
       tasks: result,
       totalTasks,

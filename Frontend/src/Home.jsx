@@ -18,7 +18,7 @@ function Home() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(6); // Default 6 tasks per page
 
-  // Task Modal & Edit states
+ 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [taskData, setTaskData] = useState({
@@ -27,7 +27,6 @@ function Home() {
     duedate: "",
   });
 
-  // Import Sheet Modal state
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [sheetLink, setSheetLink] = useState("");
   const [isImporting, setIsImporting] = useState(false);
@@ -88,7 +87,6 @@ function Home() {
     }
   }, [userid, currenttab, debouncedsearch, sortBy, page, limit]);
 
-  // Reset to page 1 whenever filters change
   const handleTabChange = (tab) => {
     setcurrenttab(tab);
     setPage(1);
@@ -129,7 +127,7 @@ function Home() {
     setIsModalOpen(true);
   };
 
-  // Close Modal and Reset Form State
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingTaskId(null);
